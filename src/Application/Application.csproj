@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Features\ValueFeature\Commands\DeleteValue\**" />
+    <EmbeddedResource Remove="Features\ValueFeature\Commands\DeleteValue\**" />
+    <None Remove="Features\ValueFeature\Commands\DeleteValue\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cortex.Mediator" Version="1.7.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+    <PackageReference Include="StackExchange.Redis" Version="2.9.17" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Abstractions\Messaging\Command\Update\" />
+    <Folder Include="Features\ValueFeature\Commands\InsertBulkValue\" />
+    <Folder Include="Features\ValueFeature\Commands\UpdateValue\" />
+    <Folder Include="Features\ValueFeature\Queries\GetListValue\" />
+    <Folder Include="Features\ValueFeature\Queries\GetByIdValue\" />
+    <Folder Include="Features\ValueFeature\Queries\ExportExcelValue\" />
+    <Folder Include="Features\ValueFeature\Queries\ExportCsvValue\" />
+  </ItemGroup>
+
+</Project>

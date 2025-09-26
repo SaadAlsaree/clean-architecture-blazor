@@ -1,0 +1,101 @@
+@using Application.Features.ValueFeature.Commands.UpdateValue
+@using Application.Features.ValueFeature.Queries.Shared
+@using Cortex.Mediator
+@using WebApp.Services
+
+@inject IValueManagementService ValueService
+@rendermode InteractiveServer
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: scroll">
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudTextField Label="Name" @bind-Value="model.Name" For="@(() => model.Name)" Required="true" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudNumericField Label="Value Number" @bind-Value="model.ValueNumber"
+                            For="@(() => model.ValueNumber)" Required="true" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudSelect @bind-Value="model.StatusId" Label="Status" T="Status" Required="true">
+                            <MudSelectItem Value="Status.Unverified">Unverified</MudSelectItem>
+                            <MudSelectItem Value="Status.Verified">Verified</MudSelectItem>
+                            <MudSelectItem Value="Status.Active">Active</MudSelectItem>
+                            <MudSelectItem Value="Status.Inactive">Inactive</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Disabled="@_processing">
+            @if (_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Updating...</MudText>
+            }
+            else
+            {
+                <MudText>Update</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IDialogReference MudDialog { get; set; } = null!;
+    [Parameter] public ValueViewModel Value { get; set; } = new();
+
+    private UpdateValueCommand model = new();
+    private bool _processing = false;
+
+    protected override void OnParametersSet()
+    {
+        if (Value != null)
+        {
+            model = new UpdateValueCommand
+            {
+                Id = Value.Id,
+                Name = Value.Name,
+                ValueNumber = Value.ValueNumber,
+                StatusId = (Status)Value.StatusId
+            };
+        }
+    }
+
+    private void Cancel() => MudDialog?.Close(DialogResult.Cancel());
+
+    private async Task Submit()
+    {
+        _processing = true;
+        try
+        {
+            var result = await ValueService.UpdateValueAsync(model);
+            if (result.Succeeded)
+            {
+                MudDialog?.Close(DialogResult.Ok(result.Data));
+            }
+            else
+            {
+                // Handle validation errors or other issues
+                _processing = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception)
+        {
+            _processing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        await Submit();
+    }
+}

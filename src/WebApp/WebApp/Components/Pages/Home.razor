@@ -1,0 +1,137 @@
+﻿@page "/"
+
+<PageTitle>Home - Analyzer App</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid Spacing="4">
+        <!-- Welcome Section -->
+        <MudItem xs="12">
+            <MudPaper Elevation="2" Class="pa-6">
+                <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary">
+                    Welcome to Analyzer App
+                </MudText>
+                <MudText Typo="Typo.body1" Class="mb-4">
+                    A powerful data analysis and management platform built with Clean Architecture, CQRS, and MudBlazor.
+                </MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.DataObject"
+                    Href="/values" Size="Size.Large">
+                    Start Managing Values
+                </MudButton>
+            </MudPaper>
+        </MudItem>
+
+        <!-- Quick Stats -->
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Total Values</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Primary">@totalValues</MudText>
+                    </MudStack>
+                    <MudIcon Icon="@Icons.Material.Filled.DataObject" Size="Size.Large" Color="Color.Primary" />
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Verified</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Success">@verifiedValues</MudText>
+                    </MudStack>
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Large" Color="Color.Success" />
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Pending</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Warning">@pendingValues</MudText>
+                    </MudStack>
+                    <MudIcon Icon="@Icons.Material.Filled.Schedule" Size="Size.Large" Color="Color.Warning" />
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudStack Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Rejected</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Error">@rejectedValues</MudText>
+                    </MudStack>
+                    <MudIcon Icon="@Icons.Material.Filled.Cancel" Size="Size.Large" Color="Color.Error" />
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <!-- Quick Actions -->
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h6" GutterBottom="true">Quick Actions</MudText>
+                <MudStack Spacing="2">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+                        FullWidth="true" Href="/values">
+                        Add New Value
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                        StartIcon="@Icons.Material.Filled.Upload" FullWidth="true">
+                        Bulk Import
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Tertiary"
+                        StartIcon="@Icons.Material.Filled.Download" FullWidth="true">
+                        Export Data
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <!-- Recent Activity -->
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h6" GutterBottom="true">Features</MudText>
+                <MudList T="string" Dense="true">
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Architecture"
+                        Text="Clean Architecture Pattern" />
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.FlashOn" Text="CQRS with MediatR" />
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Storage" Text="Entity Framework Core" />
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Security" Text="Data Validation" />
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Speed" Text="Bulk Operations" />
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.CloudDownload" Text="Import/Export" />
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private int totalValues = 0;
+    private int verifiedValues = 0;
+    private int pendingValues = 0;
+    private int rejectedValues = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // In a real application, you would fetch these statistics from the backend
+        // For demo purposes, using mock data
+        await LoadStatistics();
+    }
+
+    private async Task LoadStatistics()
+    {
+        // Simulate loading time
+        await Task.Delay(100);
+
+        // Mock data - replace with actual service calls
+        totalValues = 1250;
+        verifiedValues = 980;
+        pendingValues = 195;
+        rejectedValues = 75;
+
+        StateHasChanged();
+    }
+}

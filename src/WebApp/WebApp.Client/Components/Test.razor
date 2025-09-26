@@ -1,0 +1,15 @@
+﻿@rendermode InteractiveServer
+
+<h3>Test</h3>
+
+<button class="btn btn-primary" @onclick="Counter">Counter</button>
+
+<p>Current count: @currentCount</p>
+
+@code {
+	private int currentCount = 0;
+	private void Counter(MouseEventArgs args)
+	{
+		 currentCount++;
+	}
+}

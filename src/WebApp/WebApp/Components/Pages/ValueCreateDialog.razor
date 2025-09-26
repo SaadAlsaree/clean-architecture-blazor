@@ -1,0 +1,80 @@
+@using Application.Features.ValueFeature.Commands.CreateValue
+@using Cortex.Mediator
+@using Domain.Common
+@using WebApp.Services
+
+@inject IValueManagementService ValueService
+
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer >
+            <FormCraftComponent TModel="CreateValueCommand" Model="@model" Configuration="@formConfig"
+                OnValidSubmit="@HandleSubmit" ShowSubmitButton="false" />
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(() => HandleSubmit(model))"
+            Disabled="@_processing">
+            @if (_processing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <MudText Class="ms-2">Creating...</MudText>
+            }
+            else
+            {
+                <MudText>Create</MudText>
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IDialogReference MudDialog { get; set; } = null!;
+
+    private CreateValueCommand model = new();
+    private bool _processing = false;
+    private IFormConfiguration<CreateValueCommand>? formConfig;
+
+    protected override void OnInitialized()
+    {
+         formConfig = FormBuilder<CreateValueCommand>
+        .Create()
+        .AddRequiredTextField(x => x.Name, "Name Is Requierd", minLength:3)
+        .AddField(f => f.ValueNumber, field => field.WithLabel("Value Number").WithFluentValidation(x =>
+        x.ValueNumber))
+        .Build();
+
+    }
+
+    private void Cancel() => MudDialog?.Close(DialogResult.Cancel());
+
+    private async Task HandleSubmit(CreateValueCommand submittedModel)
+    {
+        _processing = true;
+        try
+        {
+            var result = await ValueService.CreateValueAsync(model);
+            if (result.Succeeded)
+            {
+                _processing = false;
+                StateHasChanged();
+                MudDialog?.Close(DialogResult.Ok(result.Data));
+            }
+            else
+            {
+                // Handle validation errors or other issues
+                _processing = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception)
+        {
+            _processing = false;
+            StateHasChanged();
+        }
+    }
+
+
+}
